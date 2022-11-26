@@ -6,9 +6,6 @@ import 'package:praktid_flutter/utils/mybindings.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-
-
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -23,21 +20,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     bool Theme = true;
     return GetMaterialApp(
-      title: 'PrakTID',
-      initialBinding: MyBinding(),
-      theme: Theme == false ? ThemeData.dark() : ThemeData.light(),
-      initialRoute: "/LoginPage",
-      getPages: [
-        GetPage(
-          name: "/LoginPage",
-          page: () => const LoginPage(),
-        ),
-         GetPage(
-          name: "/RegisterPage",
-          page: () => const RegisterPage(),
-        ),
-        
-        ]
-    );
+        title: 'PrakTID',
+        initialBinding: MyBinding(),
+        theme: Theme == false ? ThemeData.dark() : ThemeData.light(),
+        initialRoute: "/",
+        getPages: [
+          GetPage(
+            name: "/",
+            page: () =>  LoginPage(),
+          ),
+          GetPage(
+            name: "/Register",
+            page: () =>  RegisterPage(),
+          ),
+        ]);
   }
 }

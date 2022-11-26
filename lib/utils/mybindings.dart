@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 class MyBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() =>LoginController());
+    Get.lazyPut(() =>LoginController(),fenix: true);
     // Get.lazyPut(() =>ScrollController());
   }
 }

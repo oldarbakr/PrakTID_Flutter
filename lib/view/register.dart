@@ -3,11 +3,15 @@ import 'package:get/get.dart';
 import 'package:praktid_flutter/controller/loginController.dart';
 import 'package:email_validator/email_validator.dart';
 
-LoginController controller = Get.find();
-GlobalKey<FormState> formkey = GlobalKey<FormState>();
+
+
+
 
 class RegisterPage extends StatelessWidget {
-  const RegisterPage({super.key});
+   RegisterPage({super.key});
+
+  final LoginController controller = Get.find();
+  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +33,7 @@ class RegisterPage extends StatelessWidget {
                 ),
                 Form(
                   autovalidateMode: AutovalidateMode.always,
-                  key: formkey,
+                  key: _formkey,
                   child: Column(
                     children: [
                       Container(
@@ -80,19 +84,23 @@ class RegisterPage extends StatelessWidget {
                       ),
                       child: const Text('sign up'),
                       onPressed: () async {
-                        var formdata = formkey.currentState;
-                       if (formdata!=null) {
+                        var formdata = _formkey.currentState;
+                        if (formdata != null && formdata.validate()) {
                           formdata.save();
-                       }
-                        controller.register();
+                          controller.register(
+                          controller.email, controller.password);
+                        }
+                       
                       },
                     )),
                 Column(
                   children: [
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.offNamed("/");
+                      },
                       child: Text(
-                        'google',
+                        'sign in',
                         style: TextStyle(color: Colors.grey[600]),
                       ),
                     ),
