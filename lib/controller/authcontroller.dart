@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:praktid_flutter/view/login.dart';
 import 'package:praktid_flutter/view/mainpage.dart';
 
@@ -27,14 +28,14 @@ class AuthController extends GetxController {
 
 // navigate to login or main page
   void _initalScreen(User? user) {
-    if (user == null) {
-      Get.toNamed("/");
-    } else {
+    if (user != null && user.emailVerified == true) {
       Get.toNamed("/main");
+    } else {
+      Get.toNamed("/");
     }
   }
 
-  void register(email, password) async {
+  void register(String email, String password) async {
     try {
       final credential = await auth.createUserWithEmailAndPassword(
         email: email,
@@ -91,10 +92,10 @@ class AuthController extends GetxController {
     }
   }
 
-  void login(email, password) async {
+  void login(String email, String password) async {
     try {
       final credential = await auth.signInWithEmailAndPassword(
-          email: email, password: password);
+          email: email.trim(), password: password);
       if (credential.user!.emailVerified == true) {
         print(credential);
         Get.toNamed("/main");
@@ -138,7 +139,7 @@ class AuthController extends GetxController {
     }
   }
 
-  void resetpassword(email) async {
+  void resetpassword(String email) async {
     String textvalue = email;
     return Get.defaultDialog(
       title: "reset password",
@@ -156,19 +157,32 @@ class AuthController extends GetxController {
       ),
       onCancel: () {},
       onConfirm: () async {
-        await auth.sendPasswordResetEmail(email: textvalue);
-        Get.back();
-        return Get.defaultDialog(
-          title: "success",
-          textCancel: "ok",
-          middleText: "email has been send check your email",
-          onCancel: () {},
-        );
+        try {
+          await auth.sendPasswordResetEmail(email: textvalue.trim());
+          Get.back();
+          return Get.defaultDialog(
+            title: "success",
+            textCancel: "ok",
+            middleText: "email has been send check your email",
+            onCancel: () {},
+          );
+        } catch (e) {
+          Get.defaultDialog(
+            title: "faild",
+            textCancel: "ok",
+            middleText: "there is no user record for this email",
+            onCancel: () {},
+          );
+        }
       },
     );
   }
 
   void signout() async {
-    auth.signOut();
+    try {
+      auth.signOut();
+    } catch (e) {
+      print(e);
+    }
   }
 }
