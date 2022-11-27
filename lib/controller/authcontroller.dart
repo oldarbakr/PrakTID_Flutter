@@ -4,15 +4,39 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:praktid_flutter/view/login.dart';
+import 'package:praktid_flutter/view/mainpage.dart';
 
-class LoginController extends GetxController {
+class AuthController extends GetxController {
   String email = "";
   String password = "";
+  FirebaseAuth auth = FirebaseAuth.instance;
+  late Rx<User?> _user;
+
+  @override
+  void onInit() {
+    super.onInit();
+    _user = Rx<User?>(auth.currentUser);
+    // our user would be notified
+    _user.bindStream(auth.userChanges());
+    //if user login or logout he will be notified from firebase  using bindStream
+    // and function ever  taks listener and a fucntion and every time change happens ever function will  work
+    //notice that firebase auth always follow user current login state
+    ever(_user, _initalScreen);
+  }
+
+// navigate to login or main page
+  void _initalScreen(User? user) {
+    if (user == null) {
+      Get.toNamed("/");
+    } else {
+      Get.toNamed("/main");
+    }
+  }
 
   void register(email, password) async {
     try {
-      final credential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      final credential = await auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -62,17 +86,18 @@ class LoginController extends GetxController {
         await credential.user!.sendEmailVerification();
       }
     } catch (e) {
-      print("An error occured while trying to send email        verification");
+      print("An error occured while trying to send email  verification");
       print(e);
     }
   }
 
   void login(email, password) async {
     try {
-      final credential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
+      final credential = await auth.signInWithEmailAndPassword(
+          email: email, password: password);
       if (credential.user!.emailVerified == true) {
         print(credential);
+        Get.toNamed("/main");
       } else {
         return Get.defaultDialog(
           title: "Faild to login",
@@ -131,15 +156,19 @@ class LoginController extends GetxController {
       ),
       onCancel: () {},
       onConfirm: () async {
-        await FirebaseAuth.instance.sendPasswordResetEmail(email: textvalue);
+        await auth.sendPasswordResetEmail(email: textvalue);
         Get.back();
         return Get.defaultDialog(
-            title: "success",
-            textCancel: "ok",
-            middleText: "email has been send check your email",
-            onCancel: () {},);
-            
+          title: "success",
+          textCancel: "ok",
+          middleText: "email has been send check your email",
+          onCancel: () {},
+        );
       },
     );
+  }
+
+  void signout() async {
+    auth.signOut();
   }
 }
