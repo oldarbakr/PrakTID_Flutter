@@ -5,7 +5,7 @@ import 'package:praktid_flutter/view/register.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get/get.dart';
 
-class LoginPage extends GetWidget<AuthController> {
+class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
   final AuthController controller = Get.find();

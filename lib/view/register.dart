@@ -7,7 +7,7 @@ import 'package:email_validator/email_validator.dart';
 
 
 
-class RegisterPage extends GetWidget<AuthController> {
+class RegisterPage extends StatelessWidget {
    RegisterPage({super.key});
 
   final AuthController controller = Get.find();

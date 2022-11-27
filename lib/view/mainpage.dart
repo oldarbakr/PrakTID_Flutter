@@ -5,9 +5,10 @@ import 'package:get/get.dart';
 import 'package:praktid_flutter/controller/authcontroller.dart';
 import 'package:praktid_flutter/controller/mainController.dart';
 
-class Mainpage extends GetWidget<AuthController> {
+class Mainpage extends StatelessWidget {
   Mainpage({super.key});
-  final MainController pagecontroller = Get.find();
+  final MainController controller = Get.find();
+  final AuthController authcontroller = Get.find();
   // final MainController controller = Get.find();
 
   @override
@@ -15,19 +16,18 @@ class Mainpage extends GetWidget<AuthController> {
     return Scaffold(
         appBar: AppBar(),
         drawer: const Drawer(),
-        body: GetBuilder<MainController>(builder: (pagecontroller) {
+        body: GetBuilder<MainController>(builder: (controller) {
           return Column(
             children: [
               ElevatedButton(
                   onPressed: () {
-                    controller.signout();
-                    pagecontroller.test();
+                    authcontroller.signout();
+                    controller.test();
                   },
                   child: const Text("logout")),
-                   ElevatedButton(
+              ElevatedButton(
                   onPressed: () {
-                  
-                    pagecontroller.test();
+                    controller.test();
                   },
                   child: const Text("test"))
             ],
