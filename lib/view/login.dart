@@ -15,7 +15,7 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Login"),
+          title:  Text("Login".tr),
         ),
         body: GetBuilder<AuthController>(builder: (controller) {
           return Center(
@@ -41,11 +41,11 @@ class LoginPage extends StatelessWidget {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(90.0),
                             ),
-                            labelText: 'Email',
+                            labelText: 'Email'.tr,
                           ),
                           validator: (value) => EmailValidator.validate(value!)
                               ? null
-                              : "Please enter a valid email",
+                              : "Please enter a valid email".tr,
                           onSaved: (value) {
                             if (value != null) {
                               controller.email = value;
@@ -61,7 +61,7 @@ class LoginPage extends StatelessWidget {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(90.0),
                             ),
-                            labelText: 'Password',
+                            labelText: 'Password'.tr,
                           ),
                           onSaved: (value) {
                             if (value != null) {
@@ -80,7 +80,7 @@ class LoginPage extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size.fromHeight(50),
                       ),
-                      child: const Text('Log In'),
+                      child:  Text('sign in'.tr),
                       onPressed: () {
                         var formdata = _formkey.currentState;
                         if (formdata != null && formdata.validate()) {
@@ -98,7 +98,7 @@ class LoginPage extends StatelessWidget {
                         Get.offNamed("/Register");
                       },
                       child: Text(
-                        'Sign Up',
+                        'Sign Up'.tr,
                         style: TextStyle(color: Colors.grey[600]),
                       ),
                     ),
@@ -114,7 +114,7 @@ class LoginPage extends StatelessWidget {
                         controller.resetpassword(controller.email);
                       },
                       child: Text(
-                        'Forgot Password?',
+                        'Forgot Password?'.tr,
                         style: TextStyle(color: Colors.grey[600]),
                       ),
                     ),
