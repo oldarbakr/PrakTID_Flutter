@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:praktid_flutter/Localizations/localeController.dart';
 import 'package:praktid_flutter/controller/authcontroller.dart';
 
 import 'package:get/get.dart';
