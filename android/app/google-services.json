@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "217688408879",
+    "project_id": "praktid-flutter",
+    "storage_bucket": "praktid-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:217688408879:android:d3258ad2f11b801097d7da",
+        "android_client_info": {
+          "package_name": "com.praktid.praktid_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "217688408879-ltr8gs7109fhn13rgduv114h2ik9tb3h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCyyYWnqYxfAx19GqNwkU9jP3aiv9-OpA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "217688408879-ltr8gs7109fhn13rgduv114h2ik9tb3h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
