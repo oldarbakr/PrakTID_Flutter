@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
           ),
           GetPage(
             name: "/vod",
-            page: () => const VideoApp(),
+            page: () => VideoApp(url: Get.arguments),
           ),
         ]);
   }

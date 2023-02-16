@@ -43,7 +43,7 @@ class Mainpage extends StatelessWidget {
                   child: Text("theme".tr)),
               ElevatedButton(
                   onPressed: () {
-                    controller.test();
+                    controller.openvideo();
                   },
                   child: Text("video".tr))
             ],

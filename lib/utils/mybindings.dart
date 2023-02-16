@@ -11,7 +11,7 @@ class MyBinding extends Bindings {
   void dependencies() {
     // Get.lazyPut(() =>AuthController(),fenix: true);
     Get.lazyPut(() => MainController(), fenix: true);
-    Get.lazyPut(() => Vodcontroller(), fenix: true);
+    Get.lazyPut(() => Vodcontroller());
     Get.put<AuthController>(AuthController(), permanent: true);
 
     // Get.lazyPut(() =>ScrollController());
