@@ -30,9 +30,9 @@ class AuthController extends GetxController {
 // navigate to login or main page
   void _initalScreen(User? user) {
     if (user != null && user.emailVerified == true) {
-      Get.toNamed("/main");
+      Get.offNamed("/main");
     } else {
-      Get.toNamed("/");
+      Get.offNamed("/");
     }
   }
 
