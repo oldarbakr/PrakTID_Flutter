@@ -15,7 +15,7 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title:  Text("Login".tr),
+          title: Text("Login".tr),
         ),
         body: GetBuilder<AuthController>(builder: (controller) {
           return Center(
@@ -80,7 +80,7 @@ class LoginPage extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size.fromHeight(50),
                       ),
-                      child:  Text('sign in'.tr),
+                      child: Text('sign in'.tr),
                       onPressed: () {
                         var formdata = _formkey.currentState;
                         if (formdata != null && formdata.validate()) {
@@ -109,7 +109,7 @@ class LoginPage extends StatelessWidget {
                       onPressed: () {
                         var formdata = _formkey.currentState;
                         if (formdata != null && formdata.validate()) {
-                          formdata.save();   
+                          formdata.save();
                         }
                         controller.resetpassword(controller.email);
                       },

@@ -11,8 +11,8 @@ class Mainpage extends StatelessWidget {
   final MainController controller = Get.find();
   final AuthController authcontroller = Get.find();
   final LocaleController localcontroller = Get.find();
-  // final MainController controller = Get.find();
 
+  // final MainController controller = Get.find();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +40,12 @@ class Mainpage extends StatelessWidget {
                   onPressed: () {
                     controller.changetheme();
                   },
-                  child: Text("theme".tr))
+                  child: Text("theme".tr)),
+              ElevatedButton(
+                  onPressed: () {
+                    controller.test();
+                  },
+                  child: Text("video".tr))
             ],
           );
         }));

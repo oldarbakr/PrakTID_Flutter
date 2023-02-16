@@ -40,7 +40,10 @@ dependencies:
   shared_preferences: ^2.0.15
   firebase_core: ^2.3.0
   firebase_auth: ^4.1.4
+  dependencies:
+  firebase_analytics: ^10.1.0
   email_validator: ^2.1.17
+  appinio_video_player: ^1.2.0
 
 dev_dependencies:
   flutter_test:

@@ -13,6 +13,7 @@ class AuthController extends GetxController {
   String password = "";
   FirebaseAuth auth = FirebaseAuth.instance;
   late Rx<User?> _user;
+  Rx<User?> get user => _user;
 
   @override
   void onInit() {
@@ -98,6 +99,7 @@ class AuthController extends GetxController {
           email: email.trim(), password: password);
       if (credential.user!.emailVerified == true) {
         print(credential);
+
         Get.toNamed("/main");
       } else {
         return Get.defaultDialog(
