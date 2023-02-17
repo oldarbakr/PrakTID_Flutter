@@ -43,8 +43,8 @@ dependencies:
   dependencies:
   firebase_analytics: ^10.1.0
   email_validator: ^2.1.17
-  appinio_video_player: ^1.2.0
   cloud_firestore: ^4.3.2
+  better_player: ^0.0.83
 
 dev_dependencies:
   flutter_test:
