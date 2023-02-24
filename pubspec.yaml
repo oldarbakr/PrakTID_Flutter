@@ -45,6 +45,8 @@ dependencies:
   email_validator: ^2.1.17
   cloud_firestore: ^4.3.2
   better_player: ^0.0.83
+  firebase_storage: ^11.0.14
+  file_picker: ^5.2.5
 
 dev_dependencies:
   flutter_test:

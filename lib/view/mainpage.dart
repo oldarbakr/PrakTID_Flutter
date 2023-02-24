@@ -40,12 +40,18 @@ class Mainpage extends StatelessWidget {
                   onPressed: () {
                     controller.changetheme();
                   },
-                  child: Text("theme".tr)),
+                      child: Text("show image".tr)),
               ElevatedButton(
                   onPressed: () {
                     controller.openvideo();
                   },
-                  child: Text("video".tr))
+                  child: Text("theme".tr)),
+              Visibility(visible: authcontroller.isadmin,
+                child:  ElevatedButton(
+                  onPressed: () {
+                    authcontroller.checkinfoinfirebase();
+                  },
+                  child: Text("upload video".tr)), )
             ],
           );
         }));

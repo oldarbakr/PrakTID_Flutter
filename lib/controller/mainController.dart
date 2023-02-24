@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:praktid_flutter/main.dart';
@@ -26,10 +27,7 @@ class MainController extends GetxController {
     }
   }
 
-
-
   Future openvideo() async {
-    final AuthController authcontroller = Get.find();
     final docRef = FirebaseFirestore.instance
         .collection("videos")
         .doc("ch1-harflari")
@@ -46,9 +44,12 @@ class MainController extends GetxController {
       print(url);
       print(
           "-----------------------------------------------------------------------------------------------");
-        Get.toNamed("/vod",arguments:url );
+      Get.toNamed("/vod", arguments: url);
     }
+  }
 
+  void uploadvod(){
     
   }
+
 }
