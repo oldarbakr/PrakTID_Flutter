@@ -17,7 +17,7 @@ class AdminController extends GetxController {
 
   Future<List<File>?> pickVideo() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.video,
+      type: FileType.image,
       allowMultiple: true,
     );
 
@@ -33,7 +33,7 @@ class AdminController extends GetxController {
     // Create a storage reference to the video file
     String fileName = videoFile.path.split("/").last;
     Reference storageRef =
-        FirebaseStorage.instance.ref().child("videos/$fileName");
+        FirebaseStorage.instance.ref().child("gifs/$fileName");
 
     // Upload the video file to Firebase Storage
     UploadTask uploadTask = storageRef.putFile(videoFile);
@@ -45,8 +45,17 @@ class AdminController extends GetxController {
 
     // Save the download URL to Firestore
     String? token = authcontroller.user.value?.uid;
-    DocumentReference userDocRef = firestore.collection("users").doc(token);
-    await userDocRef.set({"videoUrl": downloadUrl}, SetOptions(merge: true));
+    CollectionReference gifsDocRef = firestore.collection("gifs");
+    await gifsDocRef.doc("ch1-harflari").collection(fileName).doc("info").set({"url": downloadUrl}, SetOptions(merge: true));
     print("Video download URL saved to Firestore");
+  }
+
+  void uploadVideo() async {
+    List<File>? videoFiles = await pickVideo();
+    if (videoFiles != null) {
+      for (File file in videoFiles) {
+        uploadVideoAndSaveUrlToFirestore(file);
+      }
+    }
   }
 }

@@ -4,6 +4,8 @@ import 'package:praktid_flutter/Localizations/local.dart';
 import 'package:praktid_flutter/Localizations/localeController.dart';
 import 'package:praktid_flutter/controller/authcontroller.dart';
 import 'package:praktid_flutter/theme/theme.dart';
+import 'package:praktid_flutter/view/AdminPage.dart';
+import 'package:praktid_flutter/view/GifsPlayerPage.dart';
 import 'package:praktid_flutter/view/login.dart';
 import 'package:praktid_flutter/view/mainpage.dart';
 import 'package:praktid_flutter/view/register.dart';
@@ -57,6 +59,14 @@ class MyApp extends StatelessWidget {
           GetPage(
             name: "/vod",
             page: () => VideoApp(url: Get.arguments),
+          ),
+          GetPage(
+            name: "/gif",
+            page: () => GifsPlayerPage(url: Get.arguments),
+          ),
+           GetPage(
+            name: "/admin",
+            page: () => AdminPage(),
           ),
         ]);
   }

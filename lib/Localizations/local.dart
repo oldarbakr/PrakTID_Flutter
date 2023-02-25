@@ -15,7 +15,8 @@ class MyLocale implements Translations {
           "Forgot Password?": "Parolanızı mı unuttunuz?",
           "sign out": "oturumu Kapat",
           "English": "ingilizce",
-          "Turkish": "Türkçe"
+          "Turkish": "Türkçe",
+          "Language":"Dil"
         },
       };
 }

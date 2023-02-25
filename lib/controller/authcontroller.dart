@@ -26,6 +26,7 @@ class AuthController extends GetxController {
     String? token = _user.value?.uid;
     userDocRef = firestore.collection("users").doc(token);
     await admincheck();
+
     // our user would be notified
     _user.bindStream(auth.userChanges());
     //if user login or logout he will be notified from firebase  using bindStream
@@ -35,8 +36,9 @@ class AuthController extends GetxController {
   }
 
 // navigate to login or main page
-  void _initalScreen(User? user) {
+  void _initalScreen(User? user) async {
     if (user != null && user.emailVerified == true) {
+
       Get.offNamed("/main");
     } else {
       Get.offNamed("/");
@@ -49,11 +51,14 @@ class AuthController extends GetxController {
       if (value.exists) {
         print("user exist");
       } else {
-        firestore.collection("users").doc(token).set({},SetOptions(merge: true)).then((value){
+        firestore
+            .collection("users")
+            .doc(token)
+            .set({}, SetOptions(merge: true)).then((value) {
           print("user aded");
         }).catchError((error) {
-        print("Error creating user document: $error");
-     });
+          print("Error creating user document: $error");
+        });
       }
     });
   }
@@ -119,9 +124,13 @@ class AuthController extends GetxController {
       final credential = await auth.signInWithEmailAndPassword(
           email: email.trim(), password: password);
       if (credential.user!.emailVerified == true) {
-        print(credential);
+           print(credential);
+          _user = Rx<User?>(auth.currentUser);
+          String? token = _user.value?.uid;
+          userDocRef = firestore.collection("users").doc(token);
+           await admincheck();
 
-        Get.toNamed("/main");
+       
       } else {
         return Get.defaultDialog(
           title: "Faild to login",
@@ -164,8 +173,10 @@ class AuthController extends GetxController {
 
   Future<void> admincheck() async {
     IdTokenResult? token = await _user.value?.getIdTokenResult();
-
-    if (token!.claims!.containsKey("admin")) {
+    if (token == null) {
+      return;
+    }
+    if (token.claims!.containsKey("admin")) {
       print("is admin");
       isadmin = true;
     } else {

@@ -17,42 +17,89 @@ class Mainpage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(),
-        drawer: const Drawer(),
+        drawer: Drawer(
+          child: GetBuilder<MainController>(
+            builder: (controller) {
+              return Column(
+                children: [
+                  const UserAccountsDrawerHeader(
+                    accountName: Text('John Doe'),
+                    accountEmail: Text('johndoe@example.com'),
+                    currentAccountPicture: CircleAvatar(
+                      backgroundImage:
+                          NetworkImage('https://picsum.photos/250?image=9'),
+                    ),
+                  ),
+                
+                       SwitchListTile(
+                          value: Get.isDarkMode ? true : false,
+                          controlAffinity: ListTileControlAffinity.trailing,
+                          title: const Text("Theme"),
+                          subtitle: Text(Get.isDarkMode == true ? "dark" : "light"),
+                          secondary: const Icon(Icons.flag),
+                          onChanged: (val) {
+                            controller.changetheme();
+                            
+                          }),
+                    
+                 
+                  ListTile(
+                leading: const Icon(Icons.language),
+                title:  Text('Language'.tr),
+                trailing: DropdownButton<String>(
+                  value: Get.locale?.languageCode,
+                  onChanged: (String? newLanguage) {
+                    if (newLanguage != null) {
+                     
+                    }
+                  },
+                  items:  [
+                    DropdownMenuItem<String>(
+                      value: 'en',
+                      child: const Text('English'),
+                      onTap: () {
+                        localcontroller.changelang("en");
+                      },
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'tr',
+                      child: const Text('Turkish'),
+                      onTap:() {
+                        localcontroller.changelang("tr");
+                      },
+                    ),
+                    // Add more language options here
+                  ],
+                ),
+              ),
+                  Visibility(
+                    visible: authcontroller.isadmin,
+                    child: ListTile(
+                      leading: const Icon(Icons.admin_panel_settings),
+                      title: const Text("Admin Page"),
+                      onTap: () {
+                        Get.toNamed("/admin");
+                      },
+                    ),
+                  ),
+                  ListTile(
+                      leading: const Icon(Icons.logout),
+                      title:  Text("Logout".tr),
+                      onTap: () {
+                        authcontroller.signout();
+                        })
+
+                ],
+              );
+            }
+          ),
+        ),
         body: GetBuilder<MainController>(builder: (controller) {
-          return Column(
-            children: [
-              ElevatedButton(
-                  onPressed: () {
-                    authcontroller.signout();
-                  },
-                  child: Text("sign out".tr)),
-              ElevatedButton(
-                  onPressed: () {
-                    localcontroller.changelang("en");
-                  },
-                  child: Text("English".tr)),
-              ElevatedButton(
-                  onPressed: () {
-                    localcontroller.changelang("tr");
-                  },
-                  child: Text("Turkish".tr)),
-              ElevatedButton(
-                  onPressed: () {
-                    controller.changetheme();
-                  },
-                      child: Text("show image".tr)),
-              ElevatedButton(
-                  onPressed: () {
-                    controller.openvideo();
-                  },
-                  child: Text("theme".tr)),
-              Visibility(visible: authcontroller.isadmin,
-                child:  ElevatedButton(
-                  onPressed: () {
-                    authcontroller.checkinfoinfirebase();
-                  },
-                  child: Text("upload video".tr)), )
-            ],
+          return ListView.builder(
+            itemCount: 6,
+            itemBuilder: (BuildContext context, int index) {
+              return ElevatedButton(child: Text("yo"),onPressed: () => controller.getchapters(),);
+            },
           );
         }));
   }
