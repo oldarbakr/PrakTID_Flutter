@@ -6,6 +6,7 @@ import 'package:praktid_flutter/controller/authcontroller.dart';
 import 'package:praktid_flutter/theme/theme.dart';
 import 'package:praktid_flutter/view/AdminPage.dart';
 import 'package:praktid_flutter/view/GifsPlayerPage.dart';
+import 'package:praktid_flutter/view/lessonpage.dart';
 import 'package:praktid_flutter/view/login.dart';
 import 'package:praktid_flutter/view/mainpage.dart';
 import 'package:praktid_flutter/view/register.dart';
@@ -13,7 +14,6 @@ import 'package:praktid_flutter/utils/mybindings.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:praktid_flutter/view/videoplayer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -57,8 +57,8 @@ class MyApp extends StatelessWidget {
             page: () => Mainpage(),
           ),
           GetPage(
-            name: "/vod",
-            page: () => VideoApp(url: Get.arguments),
+            name: "/lessons",
+            page: () => LessonsPage(items: Get.arguments),
           ),
           GetPage(
             name: "/gif",

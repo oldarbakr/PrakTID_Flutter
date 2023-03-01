@@ -7,8 +7,9 @@ import 'package:praktid_flutter/controller/authcontroller.dart';
 import 'package:praktid_flutter/controller/mainController.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Mainpage extends StatelessWidget {
-  Mainpage({super.key});
+class LessonsPage extends StatelessWidget {
+  final Map items;
+  LessonsPage({super.key, required this.items});
   final MainController controller = Get.find();
   final AuthController authcontroller = Get.find();
   final LocaleController localcontroller = Get.find();
@@ -17,7 +18,12 @@ class Mainpage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar( leading: IconButton(
+            onPressed: () {
+              Get.back();
+            }, // Handle your on tap here.
+            icon: const Icon(Icons.arrow_back_ios),
+          ),),
         drawer: Drawer(
           child: GetBuilder<MainController>(builder: (controller) {
             return Column(
@@ -87,64 +93,43 @@ class Mainpage extends StatelessWidget {
           }),
         ),
         body: GetBuilder<MainController>(builder: (controller) {
-          return FutureBuilder(
-            future: controller.getchapters(),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(
+          return ListView.builder(
+            itemCount: items.keys.length,
+            itemBuilder: (BuildContext context, int index) {
+              String lessonKey = items.keys.elementAt(index);
+              return Card(
+                elevation: 8.0,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(100),
+                  onTap: () {
+                    Get.toNamed("/gif", arguments: items[lessonKey]["url"]);
+                    print("works");
+                  },
                   child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              }
-              List<QueryDocumentSnapshot<Map<String, dynamic>>> items =
-                  snapshot.data!;
-
-              return GridView.builder(
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 210,
-                  mainAxisExtent: 210,
-                  childAspectRatio: 1 / 2,
-                  crossAxisSpacing: 20,
-                ),
-                itemCount: items.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Card(
-                    elevation: 8.0,
-                    shape: const CircleBorder(),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(100),
-                      onTap: () {
-                    
-                        controller.gotolessons(items, index);
-                      },
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              items[index].id,
-                              style: const TextStyle(
-                                fontSize: 24.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              items[index]["name"],
-                              style: const TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                          ],
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          lessonKey,
+                          style: const TextStyle(
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          items[lessonKey]["meaning"],
+                          style: const TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ],
                     ),
-                  );
-                },
+                  ),
+                ),
               );
             },
           );

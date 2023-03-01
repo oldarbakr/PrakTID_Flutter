@@ -46,7 +46,9 @@ class AdminController extends GetxController {
     // Save the download URL to Firestore
     String? token = authcontroller.user.value?.uid;
     CollectionReference gifsDocRef = firestore.collection("gifs");
-    await gifsDocRef.doc("ch1-harflari").collection(fileName).doc("info").set({"url": downloadUrl}, SetOptions(merge: true));
+    await gifsDocRef.doc("chapter_1").set(
+        {"lesson_2":{"url": downloadUrl, "meaning": "meaning11", "file": fileName}},
+        SetOptions(merge: true));
     print("Video download URL saved to Firestore");
   }
 

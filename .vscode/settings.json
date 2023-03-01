@@ -1,6 +1,9 @@
 {
     "cmake.configureOnOpen": true,
     "cmake.sourceDirectory": "${workspaceFolder}/linux",
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "githubPullRequests.ignoredPullRequestBranches": [
+        "main"
+    ]
     
 }

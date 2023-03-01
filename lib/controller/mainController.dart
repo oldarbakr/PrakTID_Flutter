@@ -13,7 +13,7 @@ class MainController extends GetxController {
   final AuthController authcontroller = Get.find();
 
   @override
-  void onInit() {
+  void onInit() async {
     // TODO: implement onInit
     super.onInit();
   }
@@ -26,34 +26,75 @@ class MainController extends GetxController {
       sharedpref!.setBool("theme", true);
       Get.changeTheme(Themes.customDarkTheme);
     }
-    await Future.delayed(const Duration(milliseconds:200));
-    
+    await Future.delayed(const Duration(milliseconds: 200));
+
     update();
   }
-  Future getchapters()async{
+
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
+      getchapters() async {
     final docRef = FirebaseFirestore.instance.collection("gifs");
 
     var docSnapshot = await docRef.get();
     for (var doc in docSnapshot.docs) {
-     final String documentId = doc.id;
-     
-    print(
-        "-----------------------------------------------------------------------------------------------");
-    print(documentId);
-    print(
-        "-----------------------------------------------------------------------------------------------");
-  // Do something with the document ID
+      final String documentId = doc.id;
+
+      print(
+          "-----------------------------------------------------------------------------------------------");
+      print(documentId);
+      print(
+          "-----------------------------------------------------------------------------------------------");
+
+      // Do something with the document ID
     }
-   
 
-
+    return docSnapshot.docs;
   }
 
+  Future getlessons(chapterid) async {
+    try {
+      final docRef =
+          FirebaseFirestore.instance.collection("gifs").doc(chapterid);
+
+      var docSnapshot = await docRef.get();
+      if (docSnapshot == null) {
+        print("no items in snapshot");
+        return null;
+      }
+      var items = docSnapshot.data();
+
+      for (var doc in items!["id"]) {
+        final String documentId = doc.id;
+
+        print(
+            "-----------------------------------------------------------------------------------------------");
+        print(documentId);
+        print(
+            "-----------------------------------------------------------------------------------------------");
+
+        // Do something with the document ID
+      }
+
+      return items;
+    } catch (e) {
+      print("faild to fetch lessons from api $e");
+    }
+  }
+  void gotolessons(items,index){
+      // Get.toNamed("/chapter", arguments: items[index].id);
+      var myMap = items[index].data();
+      myMap.keys
+          .where((key) => !key.startsWith("lesson_"))
+          .toList()
+          .forEach(myMap.remove);
+      print(myMap);
+      Get.toNamed("/lessons", arguments: myMap);
+  }
   Future openGif() async {
     final docRef = FirebaseFirestore.instance
         .collection("gifs")
-        .doc("ch1-harflari")
-        .collection("lesson1")
+        .doc("chapter_1")
+        .collection("lesson_1")
         .doc("info");
 
     authcontroller.user;

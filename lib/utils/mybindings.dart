@@ -6,7 +6,6 @@ import 'package:praktid_flutter/controller/authcontroller.dart';
 
 import 'package:get/get.dart';
 import 'package:praktid_flutter/controller/mainController.dart';
-import 'package:praktid_flutter/controller/vodcontroller.dart';
 import 'package:praktid_flutter/view/AdminPage.dart';
 
 
@@ -16,7 +15,6 @@ class MyBinding extends Bindings {
     
     // Get.lazyPut(() =>AuthController(),fenix: true);
     Get.lazyPut(() => MainController(), fenix: true);
-    Get.lazyPut(() => Vodcontroller(),fenix: true);
     Get.lazyPut(() => AdminController(), fenix: true);
     Get.lazyPut(() => GifsController(), fenix: true);
     Get.put<AuthController>(AuthController(), permanent: true);
