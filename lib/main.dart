@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
           ),
           GetPage(
             name: "/lessons",
-            page: () => LessonsPage(items: Get.arguments),
+            page: () => LessonsPage(chapter: Get.arguments),
           ),
           GetPage(
             name: "/gif",

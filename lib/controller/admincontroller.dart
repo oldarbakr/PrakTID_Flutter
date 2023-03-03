@@ -10,54 +10,112 @@ import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:praktid_flutter/controller/authcontroller.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:praktid_flutter/controller/datacontroller.dart';
+import 'package:praktid_flutter/model/dataclass.dart';
 
 class AdminController extends GetxController {
   AuthController authcontroller = Get.find();
+  DataController dataController = Get.find();
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  var chachimage;
 
-  Future<List<File>?> pickVideo() async {
+  Future<File?> pickVideo() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.image,
-      allowMultiple: true,
+      allowMultiple: false,
     );
 
     if (result != null) {
-      List<File> files = result.paths.map((path) => File(path!)).toList();
-      return files;
+      chachimage = File(result.files.single.path!);
+      update();
+      return chachimage;
     } else {
+      // User canceled the picker
       return null;
     }
   }
 
-  void uploadVideoAndSaveUrlToFirestore(File videoFile) async {
+  Future<bool> uploadVideoAndSaveUrlToFirestore(
+      File videoFile, String chapterid, String lessonid, String meaning) async {
     // Create a storage reference to the video file
-    String fileName = videoFile.path.split("/").last;
-    Reference storageRef =
-        FirebaseStorage.instance.ref().child("gifs/$fileName");
+    try {
+      String fileName = videoFile.path.split("/").last;
+      Reference storageRef =
+          FirebaseStorage.instance.ref().child("gifs/$fileName");
 
-    // Upload the video file to Firebase Storage
-    UploadTask uploadTask = storageRef.putFile(videoFile);
-    TaskSnapshot taskSnapshot = await uploadTask;
-    print("Video uploaded successfully");
+      // Upload the video file to Firebase Storage
+      UploadTask uploadTask = storageRef.putFile(videoFile);
+      TaskSnapshot taskSnapshot = await uploadTask;
+      print("Video uploaded successfully");
 
-    // Get the download URL of the video file
-    String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+      // Get the download URL of the video file
+      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
 
-    // Save the download URL to Firestore
-    String? token = authcontroller.user.value?.uid;
-    CollectionReference gifsDocRef = firestore.collection("gifs");
-    await gifsDocRef.doc("chapter_1").set(
-        {"lesson_2":{"url": downloadUrl, "meaning": "meaning11", "file": fileName}},
-        SetOptions(merge: true));
-    print("Video download URL saved to Firestore");
+      // Save the download URL to Firestore
+      String? token = authcontroller.user.value?.uid;
+      CollectionReference gifsDocRef = firestore.collection("gifs");
+      await gifsDocRef.doc(chapterid).set({
+        lessonid: {"url": downloadUrl, "meaning": meaning, "file": fileName}
+      }, SetOptions(merge: true));
+      print("Video download URL saved to Firestore");
+
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
   }
 
-  void uploadVideo() async {
-    List<File>? videoFiles = await pickVideo();
-    if (videoFiles != null) {
-      for (File file in videoFiles) {
-        uploadVideoAndSaveUrlToFirestore(file);
+  Future<bool> addlesson(String chapterid, String meaning) async {
+    dataController.fetchData();
+    Chapter chapter = dataController.chapters
+        .firstWhere((element) => element.id == chapterid);
+    String inputString = chapter.lessons.last.id;
+    int currentNumber = int.parse(inputString.split("_")[1]);
+    int newNumber = currentNumber + 1;
+    String lessonid = "lesson_$newNumber";
+    print(lessonid);
+    update();
+    File imageFile = chachimage;
+    if (imageFile != null) {
+      bool result = await uploadVideoAndSaveUrlToFirestore(
+          imageFile, chapterid, lessonid, meaning);
+      if (result == false) {
+        return false;
       }
+
+      dataController.fetchData();
+      return true;
     }
+    return false;
+  }
+
+  Future<bool> updatemeaning(
+      String chapterid, String lessonid, String meaning) async {
+    final docRef = FirebaseFirestore.instance.collection("gifs");
+    docRef.doc(chapterid).set({
+      lessonid: {"meaning": meaning},
+    }, SetOptions(merge: true));
+
+    dataController.fetchData();
+    update();
+    return true;
+  }
+
+  Future<bool> updatelesson(
+      String chapterid, String lessonid, String meaning) async {
+    File? videoFiles = await pickVideo();
+
+    if (videoFiles != null) {
+      bool result = await uploadVideoAndSaveUrlToFirestore(
+          videoFiles, chapterid, lessonid, meaning);
+      if (result == false) {
+        return false;
+      }
+
+      dataController.fetchData();
+      return true;
+    }
+    return false;
   }
 }

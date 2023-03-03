@@ -6,10 +6,11 @@ import 'package:praktid_flutter/Localizations/localeController.dart';
 import 'package:praktid_flutter/controller/authcontroller.dart';
 import 'package:praktid_flutter/controller/mainController.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:praktid_flutter/model/dataclass.dart';
 
 class LessonsPage extends StatelessWidget {
-  final Map items;
-  LessonsPage({super.key, required this.items});
+  final Chapter chapter;
+  LessonsPage({super.key, required this.chapter});
   final MainController controller = Get.find();
   final AuthController authcontroller = Get.find();
   final LocaleController localcontroller = Get.find();
@@ -18,12 +19,14 @@ class LessonsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar( leading: IconButton(
+        appBar: AppBar(
+          leading: IconButton(
             onPressed: () {
               Get.back();
             }, // Handle your on tap here.
             icon: const Icon(Icons.arrow_back_ios),
-          ),),
+          ),
+        ),
         drawer: Drawer(
           child: GetBuilder<MainController>(builder: (controller) {
             return Column(
@@ -94,15 +97,18 @@ class LessonsPage extends StatelessWidget {
         ),
         body: GetBuilder<MainController>(builder: (controller) {
           return ListView.builder(
-            itemCount: items.keys.length,
+            itemCount: chapter.lessons.length,
             itemBuilder: (BuildContext context, int index) {
-              String lessonKey = items.keys.elementAt(index);
               return Card(
-                elevation: 8.0,
+                elevation: 4,
+                margin:const EdgeInsets.all(10),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(100),
                   onTap: () {
-                    Get.toNamed("/gif", arguments: items[lessonKey]["url"]);
+                    Get.toNamed("/gif",
+                        arguments: chapter.lessons[index].videoUrl);
                     print("works");
                   },
                   child: Center(
@@ -110,7 +116,7 @@ class LessonsPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          lessonKey,
+                          chapter.lessons[index].id,
                           style: const TextStyle(
                             fontSize: 24.0,
                             fontWeight: FontWeight.bold,
@@ -120,7 +126,7 @@ class LessonsPage extends StatelessWidget {
                           height: 20,
                         ),
                         Text(
-                          items[lessonKey]["meaning"],
+                          chapter.lessons[index].meaning,
                           style: const TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.normal,

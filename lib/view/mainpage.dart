@@ -4,14 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:praktid_flutter/Localizations/localeController.dart';
 import 'package:praktid_flutter/controller/authcontroller.dart';
+import 'package:praktid_flutter/controller/datacontroller.dart';
 import 'package:praktid_flutter/controller/mainController.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:praktid_flutter/model/dataclass.dart';
 
 class Mainpage extends StatelessWidget {
   Mainpage({super.key});
   final MainController controller = Get.find();
   final AuthController authcontroller = Get.find();
   final LocaleController localcontroller = Get.find();
+  final DataController dataController = Get.find();
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      new GlobalKey<RefreshIndicatorState>();
 
   // final MainController controller = Get.find();
   @override
@@ -71,8 +76,9 @@ class Mainpage extends StatelessWidget {
                   child: ListTile(
                     leading: const Icon(Icons.admin_panel_settings),
                     title: const Text("Admin Page"),
-                    onTap: () {
-                      Get.toNamed("/admin");
+                    onTap: () async {
+                      List<Chapter> chapters = await dataController.fetchData();
+                      Get.toNamed("/admin", arguments: chapters);
                     },
                   ),
                 ),
@@ -87,66 +93,71 @@ class Mainpage extends StatelessWidget {
           }),
         ),
         body: GetBuilder<MainController>(builder: (controller) {
-          return FutureBuilder(
-            future: controller.getchapters(),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (!snapshot.hasData) {
+          return Obx((){
+             if (dataController.chapters==[]) {
                 return const Center(
                   child: Center(
                     child: CircularProgressIndicator(),
                   ),
                 );
               }
-              List<QueryDocumentSnapshot<Map<String, dynamic>>> items =
-                  snapshot.data!;
+              List<Chapter> items = dataController.chapters;
 
-              return GridView.builder(
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 210,
-                  mainAxisExtent: 210,
-                  childAspectRatio: 1 / 2,
-                  crossAxisSpacing: 20,
-                ),
-                itemCount: items.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Card(
-                    elevation: 8.0,
-                    shape: const CircleBorder(),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(100),
-                      onTap: () {
-                    
-                        controller.gotolessons(items, index);
-                      },
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              items[index].id,
-                              style: const TextStyle(
-                                fontSize: 24.0,
-                                fontWeight: FontWeight.bold,
+              return RefreshIndicator(
+                onRefresh: () async {
+                  dataController.fetchData();
+                },
+                key: _refreshIndicatorKey,
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 210,
+                    mainAxisExtent: 210,
+                    childAspectRatio: 1 / 2,
+                    crossAxisSpacing: 20,
+                  ),
+                  itemCount: items.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Card(
+                      elevation: 4,
+                      margin:const EdgeInsets.all(10),
+                      shape: const CircleBorder(),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(100),
+                        onTap: () {
+                          controller.gotolessons(items, index);
+                        },
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                items[index].id,
+                                style: const TextStyle(
+                                  fontSize: 24.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              items[index]["name"],
-                              style: const TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.normal,
+                              const SizedBox(
+                                height: 20,
                               ),
-                            ),
-                          ],
+                              Text(
+                                items[index].name,
+                                style: const TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               );
-            },
+          }
+            
+            
           );
         }));
   }
