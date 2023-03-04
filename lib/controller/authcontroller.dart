@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -12,12 +13,20 @@ class AuthController extends GetxController {
   String email = "";
   String password = "";
   FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  late DocumentReference userDocRef;
   late Rx<User?> _user;
+  Rx<User?> get user => _user;
+  late bool isadmin = false;
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
     _user = Rx<User?>(auth.currentUser);
+    String? token = _user.value?.uid;
+    userDocRef = firestore.collection("users").doc(token);
+    await admincheck();
+
     // our user would be notified
     _user.bindStream(auth.userChanges());
     //if user login or logout he will be notified from firebase  using bindStream
@@ -27,12 +36,31 @@ class AuthController extends GetxController {
   }
 
 // navigate to login or main page
-  void _initalScreen(User? user) {
+  void _initalScreen(User? user) async {
     if (user != null && user.emailVerified == true) {
-      Get.toNamed("/main");
+
+      Get.offNamed("/main");
     } else {
-      Get.toNamed("/");
+      Get.offNamed("/");
     }
+  }
+
+  void checkinfoinfirebase() async {
+    String? token = _user.value?.uid;
+    userDocRef.get().then((value) {
+      if (value.exists) {
+        print("user exist");
+      } else {
+        firestore
+            .collection("users")
+            .doc(token)
+            .set({}, SetOptions(merge: true)).then((value) {
+          print("user aded");
+        }).catchError((error) {
+          print("Error creating user document: $error");
+        });
+      }
+    });
   }
 
   void register(String email, String password) async {
@@ -64,7 +92,6 @@ class AuthController extends GetxController {
             Get.back();
           },
         );
-        ;
       } else if (e.code == 'email-already-in-use') {
         print('The account already exists for that email.');
         return Get.defaultDialog(
@@ -97,8 +124,13 @@ class AuthController extends GetxController {
       final credential = await auth.signInWithEmailAndPassword(
           email: email.trim(), password: password);
       if (credential.user!.emailVerified == true) {
-        print(credential);
-        Get.toNamed("/main");
+           print(credential);
+          _user = Rx<User?>(auth.currentUser);
+          String? token = _user.value?.uid;
+          userDocRef = firestore.collection("users").doc(token);
+           await admincheck();
+
+       
       } else {
         return Get.defaultDialog(
           title: "Faild to login",
@@ -136,6 +168,19 @@ class AuthController extends GetxController {
           },
         );
       }
+    }
+  }
+
+  Future<void> admincheck() async {
+    IdTokenResult? token = await _user.value?.getIdTokenResult();
+    if (token == null) {
+      return;
+    }
+    if (token.claims!.containsKey("admin")) {
+      print("is admin");
+      isadmin = true;
+    } else {
+      print("is not admin");
     }
   }
 

@@ -3,12 +3,8 @@ import 'package:get/get.dart';
 import 'package:praktid_flutter/controller/authcontroller.dart';
 import 'package:email_validator/email_validator.dart';
 
-
-
-
-
 class RegisterPage extends StatelessWidget {
-   RegisterPage({super.key});
+  RegisterPage({super.key});
 
   final AuthController controller = Get.find();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
@@ -88,9 +84,8 @@ class RegisterPage extends StatelessWidget {
                         if (formdata != null && formdata.validate()) {
                           formdata.save();
                           controller.register(
-                          controller.email, controller.password);
+                              controller.email, controller.password);
                         }
-                       
                       },
                     )),
                 Column(

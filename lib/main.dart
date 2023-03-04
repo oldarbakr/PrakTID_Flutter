@@ -4,14 +4,18 @@ import 'package:praktid_flutter/Localizations/local.dart';
 import 'package:praktid_flutter/Localizations/localeController.dart';
 import 'package:praktid_flutter/controller/authcontroller.dart';
 import 'package:praktid_flutter/theme/theme.dart';
-
+import 'package:praktid_flutter/view/AdminPage.dart';
+import 'package:praktid_flutter/view/GifsPlayerPage.dart';
+import 'package:praktid_flutter/view/lessonpage.dart';
 import 'package:praktid_flutter/view/login.dart';
 import 'package:praktid_flutter/view/mainpage.dart';
 import 'package:praktid_flutter/view/register.dart';
 import 'package:praktid_flutter/utils/mybindings.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 
 SharedPreferences? sharedpref;
 
@@ -34,7 +38,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
         title: 'PrakTID',
         locale: controller.initlanguage,
-        fallbackLocale:const Locale("en"),
+        fallbackLocale: const Locale("en"),
         translations: MyLocale(),
         initialBinding: MyBinding(),
         theme: theme == true ? Themes.customDarkTheme : Themes.customLightTheme,
@@ -51,6 +55,18 @@ class MyApp extends StatelessWidget {
           GetPage(
             name: "/main",
             page: () => Mainpage(),
+          ),
+          GetPage(
+            name: "/lessons",
+            page: () => LessonsPage(chapter: Get.arguments),
+          ),
+          GetPage(
+            name: "/gif",
+            page: () => GifsPlayerPage(url: Get.arguments),
+          ),
+           GetPage(
+            name: "/admin",
+            page: () => AdminPage(),
           ),
         ]);
   }
